@@ -1,4 +1,4 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
+# venv
 bin/
 include/
 lib/
@@ -7,3 +7,14 @@ lib64/
 share/
 __pycache__/
 pyvenv.cfg
+
+#files
+test.py
+menus.db
+.env
+
+#remove later
+requirements.txt
+sqlmanipulation.py
+
+

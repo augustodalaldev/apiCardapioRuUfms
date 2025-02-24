@@ -11,16 +11,27 @@ aplicada nas páginas, e passadas para a função getWeekMenu(page1Text, page2Te
 def __sanitizeCaloriesText(caloriesPageText: str) -> list[str]:
     calories = []
 
-    index = caloriesPageText.find("CALÓRICO")
+    caloriesPageText = caloriesPageText.lower()
 
-    if(index == -1): return []
+    indexCalorico = caloriesPageText.find("calórico")
 
-    caloriesTextCut = caloriesPageText[index:]
+    if(indexCalorico == -1): return []
 
-    textDivided = caloriesTextCut.split("\n")
+    caloriesTextCut = caloriesPageText[indexCalorico:]
 
-    for i in [4, 5, 6, 7, 8, 9, 14, 15, 16, 17, 18, 19]: #linhas que quero extrair do texto
-        calories.append(textDivided[i].replace(",", "."))
+    indexSobremesa1 = caloriesTextCut.find("sobremesa")
+    indexSobremesa2 = caloriesTextCut.find("sobremesa", indexSobremesa1 + 1) #pegando o index da segunda "sobremesa"
+
+    if(indexSobremesa1 == -1 or indexSobremesa2 == -1): return []
+
+    caloriesProteico = caloriesTextCut[indexSobremesa1:indexSobremesa2].split("\n")
+    caloriesVegetariano = caloriesTextCut[indexSobremesa2:].split("\n")
+
+    for i in [1, 2, 3, 4, 5, 6]:
+        calories.append(caloriesProteico[i].replace(",", "."))
+
+    for i in [1, 2, 3, 4, 5, 6]:
+        calories.append(caloriesVegetariano[i].replace(",", "."))
 
     return calories
 
@@ -101,13 +112,11 @@ def __extractWeekIngredients(ingredientPageText: str) -> dict:
 
     return weekMenuIngredients
 
-
-'''
-    recebe um dicionário da função extractDaysWeekIngredients, um dicionário da função extractCalories, e retorna um dicionário contendo todas
-    as informações diagramadas
-
-    Acho que essa função tá fazendo muita coisa
-'''
+#recebe uma data no formato '01/02/3456' e retorna no formato '3456-02-01'
+def __formatDate(date: str) -> str:
+    date = date.split("/")
+    date = date[::-1]
+    return "-".join(date)
 
 #recebe os dicionários gerados pelas funções acima, e retorna um dicionário com tudo compilado e organizado, focado na conversão futura para json
 def __extractMenuWeek(weekMenuIngredients: dict, weekCalories: dict) -> dict:
@@ -122,6 +131,7 @@ def __extractMenuWeek(weekMenuIngredients: dict, weekCalories: dict) -> dict:
             
             #extrai a data, sempre contida na primeira linha
             date = lines[0].split(":")[1].strip()
+            date = __formatDate(date)
 
             weekMenu[date] = {}
 
@@ -158,8 +168,6 @@ def getWeekMenu(page1Text: str, page2Text: str) -> dict:
     
     return __extractMenuWeek(weekMenuIngredients, weekCalories)
     
-
-
 
 
 
