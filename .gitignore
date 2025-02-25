@@ -13,8 +13,4 @@ test.py
 menus.db
 .env
 
-#remove later
-requirements.txt
-sqlmanipulation.py
-
 
