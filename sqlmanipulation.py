@@ -56,8 +56,7 @@ def getMenuByDate(date: str) -> dict:
         con.close()
 
         return {date: convertContentObject(menu[0])}
-    except Exception as e:
-        print(e)
+    except:
         return None
 
 def getAll() -> list:
